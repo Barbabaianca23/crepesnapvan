@@ -1,0 +1,25 @@
+import { prisma } from "../../lib/db" // import relativo, così evita problemi di alias
+
+export default async function MenuPage() {
+  const items = await prisma.menuItem.findMany({
+    orderBy: [{ category: "asc" }, { name: "asc" }],
+  })
+
+  if (items.length === 0) {
+    return <main><h1>Menu</h1><p>Nessun piatto trovato. Hai eseguito il seed?</p></main>
+  }
+
+  return (
+    <main>
+      <h1>Menu</h1>
+      <ul>
+        {items.map(i => (
+          <li key={i.id}>
+            <b>{i.name}</b> — {i.description} — {(i.priceCents / 100).toFixed(2)} €
+            <small> ({i.category})</small>
+          </li>
+        ))}
+      </ul>
+    </main>
+  )
+}

@@ -1,0 +1,22 @@
+import { prisma } from "../../lib/db"
+
+export default async function TourPage() {
+  const events = await prisma.event.findMany({ orderBy: { date: "asc" } })
+
+  if (events.length === 0) {
+    return <main><h1>Tour</h1><p>Nessun evento trovato. Hai eseguito il seed?</p></main>
+  }
+
+  return (
+    <main>
+      <h1>Tour</h1>
+      <ul>
+        {events.map(e => (
+          <li key={e.id}>
+            <b>{e.title}</b> — {e.city} — {new Date(e.date).toLocaleDateString("it-IT")} — {e.address}
+          </li>
+        ))}
+      </ul>
+    </main>
+  )
+}

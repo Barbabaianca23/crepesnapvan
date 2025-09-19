@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+provider = "postgresql"
+url = env("DATABASE_URL")
+}
+
+model MenuItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  priceCents  Int
+  category    String // "dolci", "salate", "bevande"
+  isAvailable Boolean  @default(true)
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  city        String
+  date        DateTime
+  address     String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  // 👇 lato opposto della relazione con Booking
+  bookings Booking[]
+}
+
+model Booking {
+  id       Int      @id @default(autoincrement())
+  fullName String
+  phone    String
+  email    String?
+  date     DateTime
+  time     String
+  guests   Int
+  notes    String?
+
+  eventId Int?
+  event   Event? @relation(fields: [eventId], references: [id])
+
+  createdAt DateTime @default(now())
+}
